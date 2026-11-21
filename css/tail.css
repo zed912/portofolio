@@ -1,1 +1,224 @@
-@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* الخلفيات */
+  --color-page: #080c14;
+  --color-surface: #101827;
+  --color-hero: #14254a;
+  --color-surface-muted: #24324a;
+
+  /* النصوص */
+  --color-content: #edf3ff;
+  --color-content-muted: #a9bad0;
+  --color-on-primary: #061225;
+
+  /* اللون الأساسي */
+  --color-primary: #83b7ff;
+
+  /* رسمة الدايرة والإضاءة */
+  --color-orbit: #5fa8f7;
+  --color-orbit-light: #7ac1ff;
+  --color-orbit-accent: #76c5ff;
+  --color-orbit-secondary: #5290dd;
+  --color-orbit-symbol: #b3dcff;
+
+  /* خلفية معاينة البورتفوليو */
+  --color-project-preview: #243974;
+
+  --font-sans: "Work Sans", sans-serif;
+}
+
+/* متغيرات التحكم في الحركة */
+.hero-emblem {
+  /* 1. سرعة كل حركة (الرقم الأصغر = أسرع) */
+  --outer-breathe-duration: 6.5s;
+  --outer-dot-duration: 4.8s;
+  --inner-swing-duration: 5.4s;
+  --code-float-duration: 3.6s;
+
+  /* 2. مدى التكبير والتصغير للحلقة الخارجية */
+  --outer-scale-min: 0.94;
+  --outer-scale-max: 1.05;
+
+  /* 3. زاوية التأرجح ذهابًا وإيابًا (بدون دوران 360) */
+  --outer-dot-swing: 28deg;
+  --inner-swing-angle: 12deg;
+
+  /* مسافة حركة الرمز </> فوق وتحت */
+  --code-float-distance: 5px;
+}
+
+@keyframes emblem-outer-breathe {
+  0%,
+  100% {
+    transform: scale(var(--outer-scale-min));
+  }
+  50% {
+    transform: scale(var(--outer-scale-max));
+  }
+}
+
+@keyframes emblem-outer-dot-arc {
+  0%,
+  100% {
+    transform: rotate(calc(var(--outer-dot-swing) * -1));
+  }
+  50% {
+    transform: rotate(var(--outer-dot-swing));
+  }
+}
+
+@keyframes emblem-inner-swing {
+  0%,
+  100% {
+    transform: rotate(calc(var(--inner-swing-angle) * -1));
+  }
+  50% {
+    transform: rotate(var(--inner-swing-angle));
+  }
+}
+
+@keyframes emblem-code-float {
+  0%,
+  100% {
+    transform: translateY(calc(var(--code-float-distance) * -1));
+  }
+  50% {
+    transform: translateY(var(--code-float-distance));
+  }
+}
+
+.emblem-outer-ring {
+  animation: emblem-outer-breathe var(--outer-breathe-duration) ease-in-out
+    infinite;
+  will-change: transform;
+}
+
+.emblem-outer-dot-arc {
+  animation: emblem-outer-dot-arc var(--outer-dot-duration) ease-in-out infinite;
+  will-change: transform;
+}
+
+.emblem-inner-ring {
+  animation: emblem-inner-swing var(--inner-swing-duration) ease-in-out infinite;
+  will-change: transform;
+}
+
+.emblem-code-float {
+  animation: emblem-code-float var(--code-float-duration) ease-in-out infinite;
+  will-change: transform;
+}
+
+/* مراعاة إعدادات تقليل الحركة في المتصفح ونظام التشغيل */
+@media (prefers-reduced-motion: reduce) {
+  .emblem-outer-ring,
+  .emblem-outer-dot-arc,
+  .emblem-inner-ring,
+  .emblem-code-float {
+    animation: none;
+    transform: none;
+  }
+}
+
+@layer components {
+  /* الكارت بالكامل */
+  .project-card {
+    @apply flex flex-col overflow-hidden rounded-xl border border-surface-muted/75 bg-surface transition-all duration-200 hover:-translate-y-1 hover:border-primary/65;
+  }
+
+  /* صورة المشروع */
+  .project-preview {
+    @apply flex h-[186px] w-full items-center justify-center overflow-hidden border-b border-surface-muted/60 bg-project-preview;
+  }
+
+  /* محتوى الكارت */
+  .project-body {
+    @apply flex flex-1 flex-col p-5 sm:p-6;
+  }
+
+  /* حالة المشروع والتقنيات */
+  .project-meta {
+    @apply mb-1.5 text-xs text-content-muted;
+  }
+
+  /* عنوان المشروع */
+  .project-title {
+    @apply mb-2 text-lg font-semibold text-content;
+  }
+
+  /* وصف المشروع */
+  .project-description {
+    @apply mb-5 flex-1 text-sm leading-relaxed text-content-muted;
+  }
+
+  /* الأزرار في أسفل الكارت */
+  .project-footer {
+    @apply flex flex-wrap items-center justify-between gap-3 border-t border-surface-muted/50 pt-4;
+  }
+
+  /* صور المشاريع */
+  .project-image {
+    @apply max-h-[122px] max-w-[76%] object-contain
+    drop-shadow-[0_10px_22px_rgba(8,12,20,0.45)]
+    transition-transform duration-200 hover:scale-105;
+  }
+
+  /* زر GitHub */
+  .project-link {
+    @apply inline-flex items-center rounded-lg border
+    border-surface-muted px-3 py-1.5 text-xs
+    font-semibold text-content transition-colors
+    hover:border-primary hover:text-primary;
+  }
+
+  /* زر Live Demo */
+  .project-live {
+    @apply inline-flex items-center rounded-lg
+    bg-primary px-3 py-1.5 text-xs font-semibold
+    text-on-primary transition-colors hover:bg-orbit-light;
+  }
+
+  /* زر التفاصيل */
+  .project-details {
+    @apply rounded text-xs font-semibold
+    text-primary transition-colors hover:text-orbit-light;
+  }
+
+  /* Security Cards */
+  .security-card {
+    @apply flex flex-col rounded-xl border
+    border-surface-muted/75 bg-page/75 p-6;
+  }
+
+  .security-title {
+    @apply mb-2 text-lg font-semibold text-content;
+  }
+
+  .security-description {
+    @apply mb-4 flex-1 text-sm leading-relaxed
+    text-content-muted;
+  }
+
+  .security-list {
+    @apply space-y-1.5 border-t border-surface-muted/50
+    pt-4 text-xs text-content-muted sm:text-[13px];
+  }
+
+  .security-step {
+    @apply rounded-lg border border-surface-muted/60
+    bg-surface/80 p-4;
+  }
+
+  .contact-link {
+    @apply inline-flex min-h-12 items-center justify-center
+    gap-3 rounded-xl border border-surface-muted
+    bg-surface px-5 py-3 text-sm text-content
+    transition-all duration-300
+    hover:-translate-y-1 hover:border-primary/60
+    hover:bg-surface-muted/40;
+  }
+
+  .contact-icon {
+    @apply text-lg text-primary;
+  }
+}
